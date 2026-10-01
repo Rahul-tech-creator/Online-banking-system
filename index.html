@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Banking System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ========================================== -->
+    <!-- 1. LOGIN PAGE                              -->
+    <!-- ========================================== -->
+    <div id="loginPage" class="login-page">
+        <div class="login-box">
+            <div class="bank-logo-icon">🏦</div>
+            <h1>MyBank</h1>
+            <p class="subtitle">Online Banking Portal</p>
+
+            <form onsubmit="event.preventDefault(); login();">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Enter username (admin)" autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter password (1234)">
+                </div>
+
+                <button type="submit" class="btn-primary full-width">Login to Portal</button>
+            </form>
+
+            <div class="demo-hint">
+                <p><strong>Demo Credentials:</strong></p>
+                <p>Username: <code>admin</code> | Password: <code>1234</code></p>
+            </div>
+
+            <p id="loginMessage" class="message-box error hidden"></p>
+        </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- 2. MAIN BANKING DASHBOARD                  -->
+    <!-- ========================================== -->
+    <div id="bankPage" class="bank-page hidden">
+
+        <!-- HEADER BAR -->
+        <header>
+            <div class="header-brand">
+                <span class="logo-icon">🏦</span>
+                <h1>MyBank</h1>
+            </div>
+
+            <div class="header-user-actions">
+                <span class="user-greeting">Welcome, <strong>Abhi</strong> (ID: CUST1001)</span>
+                <button class="btn-secondary" onclick="resetData()">Reset Demo Data</button>
+                <button class="btn-danger" onclick="logout()">Logout</button>
+            </div>
+        </header>
+
+        <main class="container">
+
+            <!-- DASHBOARD SUMMARY CARDS -->
+            <section class="dashboard-summary">
+                <div class="summary-card">
+                    <span class="summary-label">Total Balance</span>
+                    <h3 id="totalBalanceDisplay">₹0</h3>
+                </div>
+                <div class="summary-card credit-border">
+                    <span class="summary-label">Total Credits</span>
+                    <h3 id="totalCreditsDisplay" class="text-credit">+ ₹0</h3>
+                </div>
+                <div class="summary-card debit-border">
+                    <span class="summary-label">Total Debits</span>
+                    <h3 id="totalDebitsDisplay" class="text-debit">- ₹0</h3>
+                </div>
+                <div class="summary-card">
+                    <span class="summary-label">Total Transactions</span>
+                    <h3 id="totalTransactionsCount">0</h3>
+                </div>
+            </section>
+
+            <!-- ACCOUNTS OVERVIEW -->
+            <section class="accounts-grid">
+                <div class="account-card">
+                    <div class="account-header">
+                        <h3>Savings Account</h3>
+                        <span class="badge">Savings</span>
+                    </div>
+                    <p class="account-number">Account Number: <strong>****4521</strong></p>
+                    <div class="balance-container">
+                        <span class="balance-label">Available Balance</span>
+                        <h2 id="savingsBalanceDisplay">₹45,500</h2>
+                    </div>
+                </div>
+
+                <div class="account-card">
+                    <div class="account-header">
+                        <h3>Current Account</h3>
+                        <span class="badge badge-current">Current</span>
+                    </div>
+                    <p class="account-number">Account Number: <strong>****7823</strong></p>
+                    <div class="balance-container">
+                        <span class="balance-label">Available Balance</span>
+                        <h2 id="currentBalanceDisplay">₹82,300</h2>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NAVIGATION MENU -->
+            <nav class="banking-menu">
+                <button class="menu-tab active" onclick="showSection('depositSection', this)">Deposit Money</button>
+                <button class="menu-tab" onclick="showSection('transferSection', this)">Fund Transfer</button>
+                <button class="menu-tab" onclick="showSection('billSection', this)">Pay Bills</button>
+                <button class="menu-tab" onclick="showSection('loanSection', this)">Request Loan</button>
+                <button class="menu-tab" onclick="showSection('recurringSection', this)">Recurring Payments</button>
+                <button class="menu-tab" onclick="showSection('transactionsSection', this)">Transaction History</button>
+                <button class="menu-tab" onclick="showSection('statementSection', this)">Account Statement</button>
+            </nav>
+
+            <!-- ========================================== -->
+            <!-- SECTION 1: DEPOSIT MONEY                   -->
+            <!-- ========================================== -->
+            <section id="depositSection" class="content-section">
+                <h2>Deposit Money</h2>
+                <p class="section-desc">Add funds to your Savings or Current Account instantly.</p>
+
+                <div class="form-container">
+                    <div class="form-group">
+                        <label for="depositAccount">Select Account</label>
+                        <select id="depositAccount">
+                            <option value="Savings">Savings Account (****4521)</option>
+                            <option value="Current">Current Account (****7823)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="depositAmount">Amount (₹)</label>
+                        <input type="number" id="depositAmount" placeholder="Enter amount to deposit" min="1">
+                    </div>
+
+                    <button class="btn-primary" onclick="depositMoney()">Deposit Money</button>
+                    <div id="depositMessage" class="message-box hidden"></div>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- SECTION 2: FUND TRANSFER                  -->
+            <!-- ========================================== -->
+            <section id="transferSection" class="content-section hidden">
+                <h2>Fund Transfer</h2>
+                <p class="section-desc">Transfer funds securely to any account holder.</p>
+
+                <div class="form-container">
+                    <div class="form-group">
+                        <label for="transferSourceAccount">From Account</label>
+                        <select id="transferSourceAccount">
+                            <option value="Savings">Savings Account (****4521)</option>
+                            <option value="Current">Current Account (****7823)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="receiverName">Receiver Name</label>
+                        <input type="text" id="receiverName" placeholder="Enter receiver name (e.g., Rahul)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="receiverAccount">Receiver Account Number</label>
+                        <input type="text" id="receiverAccount" placeholder="Enter receiver account number (e.g., 1234567890)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="transferAmount">Amount (₹)</label>
+                        <input type="number" id="transferAmount" placeholder="Enter amount to transfer" min="1">
+                    </div>
+
+                    <button class="btn-primary" onclick="transferMoney()">Transfer Funds</button>
+                    <div id="transferMessage" class="message-box hidden"></div>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- SECTION 3: BILL PAYMENT                   -->
+            <!-- ========================================== -->
+            <section id="billSection" class="content-section hidden">
+                <h2>Pay Utility Bills</h2>
+                <p class="section-desc">Pay your electricity, water, internet, or mobile bills online.</p>
+
+                <div class="form-container">
+                    <div class="form-group">
+                        <label for="billSourceAccount">From Account</label>
+                        <select id="billSourceAccount">
+                            <option value="Savings">Savings Account (****4521)</option>
+                            <option value="Current">Current Account (****7823)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="billType">Bill Category</label>
+                        <select id="billType">
+                            <option value="Electricity">Electricity</option>
+                            <option value="Water">Water</option>
+                            <option value="Internet">Internet</option>
+                            <option value="Mobile">Mobile</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="consumerNumber">Consumer / Meter / Mobile Number</label>
+                        <input type="text" id="consumerNumber" placeholder="Enter consumer number (e.g., ELEC99823)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="billAmount">Bill Amount (₹)</label>
+                        <input type="number" id="billAmount" placeholder="Enter bill amount" min="1">
+                    </div>
+
+                    <button class="btn-primary" onclick="payBill()">Pay Bill Now</button>
+                    <div id="billMessage" class="message-box hidden"></div>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- SECTION 4: LOAN REQUEST                    -->
+            <!-- ========================================== -->
+            <section id="loanSection" class="content-section hidden">
+                <h2>Loan Application</h2>
+                <p class="section-desc">Apply for personal, home, or education loans with standard approval process.</p>
+
+                <div class="form-container">
+                    <div class="form-group">
+                        <label for="loanType">Loan Category</label>
+                        <select id="loanType">
+                            <option value="Personal Loan">Personal Loan</option>
+                            <option value="Home Loan">Home Loan</option>
+                            <option value="Education Loan">Education Loan</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loanAmount">Loan Amount Required (₹)</label>
+                        <input type="number" id="loanAmount" placeholder="Enter requested loan amount" min="1000">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loanTenure">Tenure (Years)</label>
+                        <input type="number" id="loanTenure" placeholder="Enter tenure in years (e.g., 3)" min="1" max="30">
+                    </div>
+
+                    <button class="btn-primary" onclick="requestLoan()">Submit Loan Application</button>
+                    <div id="loanMessage" class="message-box hidden"></div>
+                </div>
+
+                <div class="sub-section">
+                    <h3>My Loan Applications</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Application ID</th>
+                                    <th>Loan Category</th>
+                                    <th>Amount</th>
+                                    <th>Tenure</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="loansList">
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">No loan applications found.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- SECTION 5: RECURRING PAYMENTS              -->
+            <!-- ========================================== -->
+            <section id="recurringSection" class="content-section hidden">
+                <h2>Set Recurring Payment</h2>
+                <p class="section-desc">Schedule automated recurring bill payments and subscriptions.</p>
+
+                <div class="form-container">
+                    <div class="form-group">
+                        <label for="paymentName">Payment Name / Description</label>
+                        <input type="text" id="paymentName" placeholder="e.g., Netflix Subscription, Rent, Gym">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="paymentAmount">Amount (₹)</label>
+                        <input type="number" id="paymentAmount" placeholder="Enter payment amount" min="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="paymentFrequency">Payment Frequency</label>
+                        <select id="paymentFrequency">
+                            <option value="Monthly">Monthly</option>
+                            <option value="Weekly">Weekly</option>
+                            <option value="Yearly">Yearly</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nextPaymentDate">Next Payment Date</label>
+                        <input type="date" id="nextPaymentDate">
+                    </div>
+
+                    <button class="btn-primary" onclick="addRecurringPayment()">Set Recurring Payment</button>
+                    <div id="recurringMessage" class="message-box hidden"></div>
+                </div>
+
+                <div class="sub-section">
+                    <h3>Active Recurring Payments</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Payment Name</th>
+                                    <th>Amount</th>
+                                    <th>Frequency</th>
+                                    <th>Next Payment Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recurringList">
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">No recurring payments set.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- SECTION 6: TRANSACTIONS HISTORY            -->
+            <!-- ========================================== -->
+            <section id="transactionsSection" class="content-section hidden">
+                <h2>Transaction History</h2>
+                <p class="section-desc">View, search, and filter all account activity records.</p>
+
+                <div class="table-controls">
+                    <div class="search-box">
+                        <input type="text" id="searchQuery" placeholder="Search by description, type, or amount..." oninput="searchTransactions()">
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Filter:</span>
+                        <button class="btn-filter active" onclick="filterTransactions('all', this)">All</button>
+                        <button class="btn-filter" onclick="filterTransactions('credit', this)">Credit</button>
+                        <button class="btn-filter" onclick="filterTransactions('debit', this)">Debit</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Account</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsTableBody">
+                            <!-- Transactions rendered dynamically via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- SECTION 7: ACCOUNT STATEMENT               -->
+            <!-- ========================================== -->
+            <section id="statementSection" class="content-section hidden">
+                <h2>Account Statement</h2>
+                <p class="section-desc">Generate and download official detailed account statement files.</p>
+
+                <div class="statement-controls">
+                    <div class="form-group inline-form">
+                        <label for="statementAccountSelect">Select Account for Statement:</label>
+                        <select id="statementAccountSelect" onchange="updateStatementView()">
+                            <option value="Savings">Savings Account (****4521)</option>
+                            <option value="Current">Current Account (****7823)</option>
+                        </select>
+                    </div>
+                    <button class="btn-primary" onclick="downloadStatement()">📥 Download Statement (.txt)</button>
+                </div>
+
+                <div class="statement-card">
+                    <div class="statement-info-grid">
+                        <div>
+                            <p class="info-label">Account Holder</p>
+                            <p class="info-value">Abhi</p>
+                        </div>
+                        <div>
+                            <p class="info-label">Account Number</p>
+                            <p class="info-value" id="stmtAccNo">****4521</p>
+                        </div>
+                        <div>
+                            <p class="info-label">Account Type</p>
+                            <p class="info-value" id="stmtAccType">Savings</p>
+                        </div>
+                        <div>
+                            <p class="info-label">Current Balance</p>
+                            <p class="info-value balance-highlight" id="stmtAccBalance">₹45,500</p>
+                        </div>
+                    </div>
+
+                    <h4 class="statement-table-heading">Statement Transactions</h4>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="statementTableBody">
+                                <!-- Filtered statement rows rendered via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- SCRIPT LINK -->
+    <script src="script.js"></script>
+</body>
+
+</html>
